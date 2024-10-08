@@ -1,4 +1,4 @@
-package com.backendprueba.demo.service.impl;
+package com.backendprueba.demo.service;
 
 import com.backendprueba.demo.model.User;
 import com.backendprueba.demo.repository.UserRepository;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+@SuppressWarnings("unused")
 @Service
 public class UserQueryServiceImpl implements UserQueryService {
 

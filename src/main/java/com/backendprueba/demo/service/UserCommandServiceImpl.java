@@ -1,4 +1,4 @@
-package com.backendprueba.demo.service.impl;
+package com.backendprueba.demo.service;
 
 import com.backendprueba.demo.model.User;
 import com.backendprueba.demo.repository.UserRepository;
@@ -9,6 +9,7 @@ import com.backendprueba.demo.dto.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@SuppressWarnings("unused")
 @Service
 public class UserCommandServiceImpl implements UserCommandService {
 
