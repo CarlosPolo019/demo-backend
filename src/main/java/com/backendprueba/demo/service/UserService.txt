@@ -1,0 +1,60 @@
+package com.backendprueba.demo.service;
+
+import com.backendprueba.demo.model.User;
+import com.backendprueba.demo.repository.UserRepository;
+import com.backendprueba.demo.dto.ResponseMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.backendprueba.demo.exception.EmailAlreadyExistsException;
+import com.backendprueba.demo.exception.UserNotFoundException;
+
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.List;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con ID: " + id));
+    }
+
+    public ResponseMessage saveUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailAlreadyExistsException("El correo electrónico ya está registrado: " + user.getEmail());
+        }
+        userRepository.save(user);
+        return new ResponseMessage("Usuario creado exitosamente.");
+    }
+
+    public ResponseMessage deleteUser(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con ID: " + id));
+        
+        try {
+            userRepository.delete(user);
+            return new ResponseMessage("Usuario eliminado exitosamente.");
+        } catch (DataIntegrityViolationException ex) {
+            throw new RuntimeException("Error al eliminar el usuario debido a restricciones de integridad de la base de datos.");
+        }
+    }
+
+    public Page<User> findAllUsers(String firstName, Pageable pageable) {
+        if (firstName != null && !firstName.isEmpty()) {
+            return userRepository.findByFirstNameContaining(firstName, pageable);
+        } else {
+            return userRepository.findAll(pageable);
+        }
+    }
+    
+}
